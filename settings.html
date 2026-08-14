@@ -1,0 +1,201 @@
+<!DOCTYPE html>
+<html lang="en" class="scroll-smooth">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>System Settings | Portfolio Manager</title>
+    
+    <!-- CSS Dependencies -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script>
+        tailwind.config = {
+            darkMode: 'class',
+            theme: {
+                extend: {
+                    colors: {
+                        primary: {
+                            50: '#eff6ff',
+                            100: '#dbeafe',
+                            200: '#bfdbfe',
+                            300: '#93c5fd',
+                            400: '#60a5fa',
+                            500: '#3b82f6',
+                            600: '#2563eb',
+                            700: '#1d4ed8',
+                            800: '#1e40af',
+                            900: '#1e3a8a',
+                        },
+                        slate: {
+                            950: '#020617'
+                        }
+                    },
+                    fontFamily: {
+                        sans: ['Plus Jakarta Sans', 'sans-serif'],
+                    }
+                }
+            }
+        }
+    </script>
+    
+    <!-- Font Awesome -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    
+    <!-- Custom Style Modules -->
+    <link rel="stylesheet" href="css/style.css">
+    <link rel="stylesheet" href="css/animations.css">
+    <link rel="stylesheet" href="css/custom.css">
+</head>
+<body class="bg-slate-50 text-slate-800 dark:bg-slate-950 dark:text-slate-100 transition-colors duration-300 antialiased overflow-x-hidden min-h-screen flex">
+
+    <!-- Decorative Mesh Background -->
+    <div class="mesh-bg">
+        <div class="mesh-bg-circle-1"></div>
+        <div class="mesh-bg-circle-2"></div>
+    </div>
+
+    <!-- Admin Left Sidebar Navigation (Dynamically injected) -->
+    <div id="admin-sidebar-container" class="w-64 h-screen fixed top-0 left-0 hidden md:block z-30"></div>
+
+    <!-- Main Workspace Container -->
+    <div class="flex-1 md:ml-64 min-h-screen flex flex-col">
+        
+        <!-- Header -->
+        <header class="glass-nav h-16 fixed top-0 left-0 right-0 md:left-64 z-20 px-6 flex items-center justify-between">
+            <div class="flex items-center gap-4">
+                <button id="mobile-menu-button" class="md:hidden p-2 text-slate-600 dark:text-slate-300" aria-label="Open Sidebar Menu">
+                    <i class="fas fa-bars text-xl"></i>
+                </button>
+                <h1 class="text-lg font-bold text-slate-900 dark:text-white">System Settings</h1>
+            </div>
+            <div class="flex items-center gap-3">
+                <span class="text-xs font-semibold bg-blue-100 dark:bg-blue-900/50 text-blue-600 dark:text-sky-300 px-3 py-1 rounded-full uppercase tracking-wider border border-blue-500/10">App Config</span>
+            </div>
+        </header>
+
+        <!-- Mobile Drawer Menu -->
+        <div id="mobile-menu" class="hidden md:hidden fixed inset-0 z-30 flex">
+            <div class="absolute inset-0 bg-slate-950/60 backdrop-blur-sm" onclick="document.getElementById('mobile-menu').classList.add('hidden')"></div>
+            <div class="relative w-64 h-full bg-slate-900 z-40">
+                <button onclick="document.getElementById('mobile-menu').classList.add('hidden')" class="absolute top-4 right-4 text-slate-400 hover:text-white">
+                    <i class="fas fa-times text-xl"></i>
+                </button>
+                <div class="h-full flex flex-col" id="mobile-sidebar-loader"></div>
+            </div>
+        </div>
+
+        <!-- Content Container -->
+        <main class="flex-1 p-6 md:p-8 mt-16 max-w-4xl mx-auto w-full space-y-8 animate-fade-in-up">
+            
+            <div class="grid md:grid-cols-2 gap-8 items-start">
+                
+                <!-- Left panel: Visual & API details -->
+                <div class="space-y-8">
+                    
+                    <!-- Card 1: Theme preferences -->
+                    <div class="glass-card p-6 rounded-3xl shadow-sm space-y-4">
+                        <h3 class="text-sm font-bold text-slate-800 dark:text-white flex items-center gap-2"><i class="fas fa-palette text-blue-600"></i> Visual Configurations</h3>
+                        <p class="text-xs text-slate-400 leading-relaxed">Choose your preferred administrative theme scheme settings.</p>
+                        
+                        <div>
+                            <label for="theme-pref-select" class="block text-xs font-bold text-slate-400 uppercase tracking-wider mb-2">Display Theme Preference</label>
+                            <select id="theme-pref-select" class="w-full px-4 py-2.5 rounded-xl border border-slate-200 dark:border-slate-800 bg-white/50 dark:bg-slate-900/50 focus:outline-none focus:ring-2 focus:ring-blue-500 text-slate-800 dark:text-white font-medium text-sm transition">
+                                <option value="light">Always Light Mode</option>
+                                <option value="dark">Always Dark Mode</option>
+                                <option value="system">Sync with System Preference</option>
+                            </select>
+                        </div>
+                    </div>
+
+                    <!-- Card 2: System Specifications -->
+                    <div class="glass-card p-6 rounded-3xl shadow-sm space-y-4">
+                        <h3 class="text-sm font-bold text-slate-800 dark:text-white flex items-center gap-2"><i class="fas fa-microchip text-blue-600"></i> Stack Specifications</h3>
+                        <div class="space-y-2.5 pt-2 text-xs font-semibold">
+                            <div class="flex justify-between py-1.5 border-b border-slate-100 dark:border-slate-800/80">
+                                <span class="text-slate-400">REST API Framework</span>
+                                <span class="text-slate-800 dark:text-slate-200">Spring Boot 3.3.1</span>
+                            </div>
+                            <div class="flex justify-between py-1.5 border-b border-slate-100 dark:border-slate-800/80">
+                                <span class="text-slate-400">Java SDK Runtime</span>
+                                <span class="text-slate-800 dark:text-slate-200">JDK 17 LTS</span>
+                            </div>
+                            <div class="flex justify-between py-1.5 border-b border-slate-100 dark:border-slate-800/80">
+                                <span class="text-slate-400">Database Engine</span>
+                                <span class="text-slate-800 dark:text-slate-200">MySQL 8.x / JPA</span>
+                            </div>
+                            <div class="flex justify-between py-1.5">
+                                <span class="text-slate-400">Upload Payload Limit</span>
+                                <span class="text-slate-800 dark:text-slate-200">10MB Max size</span>
+                            </div>
+                        </div>
+                    </div>
+
+                </div>
+
+                <!-- Right panel: Active Auth Token Details -->
+                <div class="glass-card p-6 rounded-3xl shadow-sm space-y-4">
+                    <h3 class="text-sm font-bold text-slate-800 dark:text-white flex items-center gap-2"><i class="fas fa-key text-blue-600"></i> API Endpoint & Auth Credentials</h3>
+                    
+                    <div class="space-y-4">
+                        <div>
+                            <span class="block text-xs font-bold text-slate-400 uppercase tracking-wider mb-1.5">Active API Base URL</span>
+                            <div class="p-3 rounded-xl bg-slate-100/50 dark:bg-slate-900/50 border border-slate-200/50 dark:border-slate-800/50 text-xs font-mono text-blue-600 dark:text-sky-300" id="api-url">
+                                http://localhost:8080/api
+                            </div>
+                        </div>
+                        
+                        <div>
+                            <span class="block text-xs font-bold text-slate-400 uppercase tracking-wider mb-1.5">Current Session JWT Token</span>
+                            <div class="p-3 rounded-xl bg-slate-100/50 dark:bg-slate-900/50 border border-slate-200/50 dark:border-slate-800/50 text-xs font-mono text-slate-500 dark:text-slate-400 break-all leading-normal" id="token-preview">
+                                Loading session token...
+                            </div>
+                        </div>
+                        
+                        <div id="token-details">
+                            <!-- Token details injected dynamically -->
+                        </div>
+                    </div>
+                </div>
+
+            </div>
+            
+        </main>
+
+        <!-- Footer -->
+        <footer class="py-6 bg-slate-900 dark:bg-slate-950 text-slate-400 border-t border-slate-800 mt-auto">
+            <div class="max-w-7xl mx-auto px-6 text-center text-xs font-semibold">
+                <p>&copy; 2026 Devoff Itzme. Admin Console Mode.</p>
+            </div>
+        </footer>
+
+    </div>
+
+    <!-- SweetAlert2 -->
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+    
+    <!-- Scripts -->
+    <script src="js/config.js"></script>
+    <script src="js/api.js"></script>
+    <script src="js/auth.js"></script>
+    <script src="js/common.js"></script>
+    <script src="js/settings.js"></script>
+    
+    <script>
+        // Set up mobile menu content
+        document.addEventListener('DOMContentLoaded', () => {
+            const sidebar = document.getElementById('admin-sidebar-container');
+            const mobileSidebarLoader = document.getElementById('mobile-sidebar-loader');
+            if (sidebar && mobileSidebarLoader) {
+                setTimeout(() => {
+                    mobileSidebarLoader.innerHTML = sidebar.innerHTML;
+                    const mobileCloseBtn = mobileSidebarLoader.querySelector('#admin-logout-btn');
+                    if (mobileCloseBtn) {
+                        mobileCloseBtn.addEventListener('click', () => {
+                            document.getElementById('mobile-menu').classList.add('hidden');
+                        });
+                    }
+                }, 100);
+            }
+        });
+    </script>
+</body>
+</html>

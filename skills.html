@@ -1,0 +1,214 @@
+<!DOCTYPE html>
+<html lang="en" class="scroll-smooth">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Manage Skills | Portfolio Manager</title>
+    
+    <!-- CSS Dependencies -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script>
+        tailwind.config = {
+            darkMode: 'class',
+            theme: {
+                extend: {
+                    colors: {
+                        primary: {
+                            50: '#eff6ff',
+                            100: '#dbeafe',
+                            200: '#bfdbfe',
+                            300: '#93c5fd',
+                            400: '#60a5fa',
+                            500: '#3b82f6',
+                            600: '#2563eb',
+                            700: '#1d4ed8',
+                            800: '#1e40af',
+                            900: '#1e3a8a',
+                        },
+                        slate: {
+                            950: '#020617'
+                        }
+                    },
+                    fontFamily: {
+                        sans: ['Plus Jakarta Sans', 'sans-serif'],
+                    }
+                }
+            }
+        }
+    </script>
+    
+    <!-- Font Awesome -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    
+    <!-- Custom Style Modules -->
+    <link rel="stylesheet" href="css/style.css">
+    <link rel="stylesheet" href="css/animations.css">
+    <link rel="stylesheet" href="css/custom.css">
+</head>
+<body class="bg-slate-50 text-slate-800 dark:bg-slate-950 dark:text-slate-100 transition-colors duration-300 antialiased overflow-x-hidden min-h-screen flex">
+
+    <!-- Decorative Mesh Background -->
+    <div class="mesh-bg">
+        <div class="mesh-bg-circle-1"></div>
+        <div class="mesh-bg-circle-2"></div>
+    </div>
+
+    <!-- Admin Left Sidebar Navigation (Dynamically injected) -->
+    <div id="admin-sidebar-container" class="w-64 h-screen fixed top-0 left-0 hidden md:block z-30"></div>
+
+    <!-- Main Workspace Container -->
+    <div class="flex-1 md:ml-64 min-h-screen flex flex-col">
+        
+        <!-- Header -->
+        <header class="glass-nav h-16 fixed top-0 left-0 right-0 md:left-64 z-20 px-6 flex items-center justify-between">
+            <div class="flex items-center gap-4">
+                <button id="mobile-menu-button" class="md:hidden p-2 text-slate-600 dark:text-slate-300" aria-label="Open Sidebar Menu">
+                    <i class="fas fa-bars text-xl"></i>
+                </button>
+                <h1 class="text-lg font-bold text-slate-900 dark:text-white">Skills Matrix</h1>
+            </div>
+            <div class="flex items-center gap-3">
+                <button onclick="openAddSkillModal()" class="py-2 px-4 rounded-xl bg-blue-600 hover:bg-blue-700 text-white font-bold transition text-xs shadow-md shadow-blue-500/25 flex items-center gap-1.5">
+                    <i class="fas fa-plus"></i> Add Skill
+                </button>
+            </div>
+        </header>
+
+        <!-- Mobile Drawer Menu -->
+        <div id="mobile-menu" class="hidden md:hidden fixed inset-0 z-30 flex">
+            <div class="absolute inset-0 bg-slate-950/60 backdrop-blur-sm" onclick="document.getElementById('mobile-menu').classList.add('hidden')"></div>
+            <div class="relative w-64 h-full bg-slate-900 z-40">
+                <button onclick="document.getElementById('mobile-menu').classList.add('hidden')" class="absolute top-4 right-4 text-slate-400 hover:text-white">
+                    <i class="fas fa-times text-xl"></i>
+                </button>
+                <div class="h-full flex flex-col" id="mobile-sidebar-loader"></div>
+            </div>
+        </div>
+
+        <!-- Content Container -->
+        <main class="flex-1 p-6 md:p-8 mt-16 max-w-6xl mx-auto w-full space-y-8 animate-fade-in-up">
+            
+            <!-- Table Card -->
+            <div class="glass-card rounded-3xl overflow-hidden shadow-md">
+                <div class="p-6 border-b border-slate-100 dark:border-slate-800/80 flex items-center justify-between">
+                    <div>
+                        <h2 class="text-base font-bold text-slate-800 dark:text-white">Core Skills Listing</h2>
+                        <p class="text-xs text-slate-400 mt-0.5">Toggle active state, update percentages, or change order parameters.</p>
+                    </div>
+                </div>
+                
+                <div class="overflow-x-auto">
+                    <table class="w-full text-left border-collapse">
+                        <thead>
+                            <tr class="bg-slate-100/50 dark:bg-slate-900/50 text-[10px] font-bold text-slate-400 uppercase tracking-wider border-b border-slate-200/50 dark:border-slate-800/50">
+                                <th class="px-6 py-3.5">Skill Name</th>
+                                <th class="px-6 py-3.5">Category</th>
+                                <th class="px-6 py-3.5">Proficiency</th>
+                                <th class="px-6 py-3.5 w-24">Display Order</th>
+                                <th class="px-6 py-3.5 w-32">Actions</th>
+                            </tr>
+                        </thead>
+                        <tbody id="skills-tbody" class="divide-y divide-slate-100 dark:divide-slate-800/80">
+                            <tr>
+                                <td colspan="7" class="px-6 py-8 text-center text-slate-400 text-sm">
+                                    <i class="fas fa-spinner animate-spin mr-2"></i> Loading skills details...
+                                </td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+            
+        </main>
+
+        <!-- Footer -->
+        <footer class="py-6 bg-slate-900 dark:bg-slate-950 text-slate-400 border-t border-slate-800 mt-auto">
+            <div class="max-w-7xl mx-auto px-6 text-center text-xs font-semibold">
+                <p>&copy; 2026 Devoff Itzme. Admin Console Mode.</p>
+            </div>
+        </footer>
+
+    </div>
+
+    <!-- Skill Add/Edit Modal (Hidden by default) -->
+    <div id="skill-modal" class="fixed inset-0 z-50 flex items-center justify-center p-4 bg-slate-950/80 backdrop-blur-sm hidden transition-opacity duration-300">
+        <div class="glass-card rounded-3xl max-w-md w-full p-6 shadow-2xl relative animate-fade-in-up" onclick="event.stopPropagation()">
+            
+            <!-- Close button -->
+            <button id="close-skill-modal" class="absolute top-4 right-4 w-8 h-8 rounded-full bg-slate-200/50 dark:bg-slate-800/50 hover:bg-slate-200 dark:hover:bg-slate-800 text-slate-600 dark:text-slate-300 flex items-center justify-center transition duration-150">
+                <i class="fas fa-times text-xs"></i>
+            </button>
+            
+            <h3 id="modal-title" class="text-lg font-bold text-slate-900 dark:text-white mb-6">Add New Skill</h3>
+            
+            <form id="skill-form" class="space-y-5">
+                <div>
+                    <label for="skill-name" class="block text-xs font-bold text-slate-400 uppercase tracking-wider mb-2">Skill Name</label>
+                    <input type="text" id="skill-name" class="w-full px-4 py-2.5 rounded-xl border border-slate-200 dark:border-slate-800 bg-white/50 dark:bg-slate-900/50 focus:outline-none focus:ring-2 focus:ring-blue-500 text-slate-800 dark:text-white font-medium text-sm transition" placeholder="e.g. Java 17" required>
+                </div>
+                
+                <div>
+                    <label for="skill-category" class="block text-xs font-bold text-slate-400 uppercase tracking-wider mb-2">Category</label>
+                    <select id="skill-category" class="w-full px-4 py-2.5 rounded-xl border border-slate-200 dark:border-slate-800 bg-white/50 dark:bg-slate-900/50 focus:outline-none focus:ring-2 focus:ring-blue-500 text-slate-800 dark:text-white font-medium text-sm transition" required>
+                        <option value="" disabled selected>Select Category</option>
+                        <option value="TECHNICAL">TECHNICAL</option>
+                        <option value="SOFT_SKILL">SOFT_SKILL</option>
+                    </select>
+                </div>
+                
+                <div>
+                    <div class="flex justify-between items-center mb-2">
+                        <label for="skill-percentage" class="block text-xs font-bold text-slate-400 uppercase tracking-wider">Proficiency percentage</label>
+                        <span id="skill-percentage-val" class="text-xs font-bold text-blue-600 dark:text-sky-400">80%</span>
+                    </div>
+                    <input type="range" id="skill-percentage" min="0" max="100" class="w-full accent-blue-600 bg-slate-200 dark:bg-slate-800 rounded-lg cursor-pointer">
+                </div>
+                
+                <div>
+                    <label for="skill-display-order" class="block text-xs font-bold text-slate-400 uppercase tracking-wider mb-2">Display Order</label>
+                    <input type="number" id="skill-display-order" min="1" class="w-full px-4 py-2.5 rounded-xl border border-slate-200 dark:border-slate-800 bg-white/50 dark:bg-slate-900/50 focus:outline-none focus:ring-2 focus:ring-blue-500 text-slate-800 dark:text-white font-medium text-sm transition" required>
+                </div>
+                
+                <div class="flex justify-end gap-3 pt-4 border-t border-slate-100 dark:border-slate-800/80">
+                    <button type="button" onclick="document.getElementById('skill-modal').classList.add('hidden')" class="py-2.5 px-4 rounded-xl border border-slate-300 dark:border-slate-700 text-slate-700 dark:text-slate-300 hover:bg-slate-100 dark:hover:bg-slate-900 font-bold transition text-xs">
+                        Cancel
+                    </button>
+                    <button type="submit" class="py-2.5 px-6 rounded-xl bg-blue-600 hover:bg-blue-700 text-white font-bold transition shadow-lg shadow-blue-500/20 text-xs">
+                        Save Skill
+                    </button>
+                </div>
+            </form>
+            
+        </div>
+    </div>
+
+    <!-- SweetAlert2 -->
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+    
+    <!-- Scripts -->
+    <script src="js/config.js"></script>
+    <script src="js/api.js"></script>
+    <script src="js/auth.js"></script>
+    <script src="js/common.js"></script>
+    <script src="js/skills.js"></script>
+    
+    <script>
+        // Set up mobile menu content
+        document.addEventListener('DOMContentLoaded', () => {
+            const sidebar = document.getElementById('admin-sidebar-container');
+            const mobileSidebarLoader = document.getElementById('mobile-sidebar-loader');
+            if (sidebar && mobileSidebarLoader) {
+                setTimeout(() => {
+                    mobileSidebarLoader.innerHTML = sidebar.innerHTML;
+                    const mobileCloseBtn = mobileSidebarLoader.querySelector('#admin-logout-btn');
+                    if (mobileCloseBtn) {
+                        mobileCloseBtn.addEventListener('click', () => {
+                            document.getElementById('mobile-menu').classList.add('hidden');
+                        });
+                    }
+                }, 100);
+            }
+        });
+    </script>
+</body>
+</html>

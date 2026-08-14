@@ -1,0 +1,197 @@
+<!DOCTYPE html>
+<html lang="en" class="scroll-smooth">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Manage Resume | Portfolio Manager</title>
+    
+    <!-- CSS Dependencies -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script>
+        tailwind.config = {
+            darkMode: 'class',
+            theme: {
+                extend: {
+                    colors: {
+                        primary: {
+                            50: '#eff6ff',
+                            100: '#dbeafe',
+                            200: '#bfdbfe',
+                            300: '#93c5fd',
+                            400: '#60a5fa',
+                            500: '#3b82f6',
+                            600: '#2563eb',
+                            700: '#1d4ed8',
+                            800: '#1e40af',
+                            900: '#1e3a8a',
+                        },
+                        slate: {
+                            950: '#020617'
+                        }
+                    },
+                    fontFamily: {
+                        sans: ['Plus Jakarta Sans', 'sans-serif'],
+                    }
+                }
+            }
+        }
+    </script>
+    
+    <!-- Font Awesome -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    
+    <!-- Custom Style Modules -->
+    <link rel="stylesheet" href="css/style.css">
+    <link rel="stylesheet" href="css/animations.css">
+    <link rel="stylesheet" href="css/custom.css">
+</head>
+<body class="bg-slate-50 text-slate-800 dark:bg-slate-950 dark:text-slate-100 transition-colors duration-300 antialiased overflow-x-hidden min-h-screen flex">
+
+    <!-- Decorative Mesh Background -->
+    <div class="mesh-bg">
+        <div class="mesh-bg-circle-1"></div>
+        <div class="mesh-bg-circle-2"></div>
+    </div>
+
+    <!-- Admin Left Sidebar Navigation (Dynamically injected) -->
+    <div id="admin-sidebar-container" class="w-64 h-screen fixed top-0 left-0 hidden md:block z-30"></div>
+
+    <!-- Main Workspace Container -->
+    <div class="flex-1 md:ml-64 min-h-screen flex flex-col">
+        
+        <!-- Header -->
+        <header class="glass-nav h-16 fixed top-0 left-0 right-0 md:left-64 z-20 px-6 flex items-center justify-between">
+            <div class="flex items-center gap-4">
+                <button id="mobile-menu-button" class="md:hidden p-2 text-slate-600 dark:text-slate-300" aria-label="Open Sidebar Menu">
+                    <i class="fas fa-bars text-xl"></i>
+                </button>
+                <h1 class="text-lg font-bold text-slate-900 dark:text-white">Resume Management</h1>
+            </div>
+            <div class="flex items-center gap-3">
+                <span class="text-xs font-semibold bg-blue-100 dark:bg-blue-900/50 text-blue-600 dark:text-sky-300 px-3 py-1 rounded-full uppercase tracking-wider border border-blue-500/10">PDF Uploads</span>
+            </div>
+        </header>
+
+        <!-- Mobile Drawer Menu -->
+        <div id="mobile-menu" class="hidden md:hidden fixed inset-0 z-30 flex">
+            <div class="absolute inset-0 bg-slate-950/60 backdrop-blur-sm" onclick="document.getElementById('mobile-menu').classList.add('hidden')"></div>
+            <div class="relative w-64 h-full bg-slate-900 z-40">
+                <button onclick="document.getElementById('mobile-menu').classList.add('hidden')" class="absolute top-4 right-4 text-slate-400 hover:text-white">
+                    <i class="fas fa-times text-xl"></i>
+                </button>
+                <div class="h-full flex flex-col" id="mobile-sidebar-loader"></div>
+            </div>
+        </div>
+
+        <!-- Content Container -->
+        <main class="flex-1 p-6 md:p-8 mt-16 max-w-4xl mx-auto w-full space-y-8 animate-fade-in-up flex flex-col">
+            
+            <!-- 1. Drag & Drop File Upload Box (Hidden when resume is active) -->
+            <div id="resume-upload-box" class="glass-card p-10 rounded-3xl shadow-md border-2 border-dashed border-slate-200 dark:border-slate-800 text-center flex flex-col items-center justify-center min-h-[300px] transition-all duration-300" id="drop-zone">
+                <div class="w-16 h-16 rounded-2xl bg-blue-500/10 text-blue-600 dark:bg-blue-400/10 dark:text-sky-300 flex items-center justify-center text-3xl mb-6 animate-float">
+                    <i class="fas fa-file-pdf"></i>
+                </div>
+                <h3 class="text-lg font-bold text-slate-800 dark:text-white mb-2">Upload Your Active Resume</h3>
+                <p class="text-xs text-slate-500 dark:text-slate-400 max-w-sm mb-6 leading-relaxed">
+                    Drag and drop your resume PDF file here, or click to browse files. The uploaded document will be available for download on the public portfolio.
+                </p>
+                <div class="flex flex-wrap gap-3 justify-center">
+                    <label id="browse-label" for="resume-file-input" class="py-3 px-6 rounded-xl bg-blue-600 hover:bg-blue-700 text-white font-bold text-sm cursor-pointer transition shadow-lg shadow-blue-500/20">
+                        Browse PDF File
+                    </label>
+                    <button type="button" id="upload-save-btn" onclick="saveResume()" class="hidden py-3 px-6 rounded-xl bg-green-600 hover:bg-green-700 text-white font-bold text-sm transition shadow-lg shadow-green-500/20 flex items-center gap-1.5">
+                        <i class="fas fa-save"></i> Save Resume
+                    </button>
+                    <button type="button" id="upload-cancel-btn" onclick="cancelUploadSelection()" class="hidden py-3 px-6 rounded-xl border border-slate-300 dark:border-slate-700 text-slate-700 dark:text-slate-300 hover:bg-slate-100 dark:hover:bg-slate-900 font-bold text-sm transition">
+                        Cancel
+                    </button>
+                </div>
+                <input type="file" id="resume-file-input" class="hidden" accept="application/pdf">
+            </div>
+
+            <!-- 2. Active Resume Panel (Hidden when no resume is uploaded) -->
+            <div id="resume-preview-container" class="hidden space-y-6 flex-1 flex flex-col">
+                <!-- Info Summary Header Card -->
+                <div class="glass-card p-5 rounded-2xl shadow-sm flex flex-col sm:flex-row items-center justify-between gap-4">
+                    <div class="flex items-center gap-4 text-center sm:text-left">
+                        <div class="w-12 h-12 rounded-xl bg-red-500/10 text-red-500 flex items-center justify-center text-2xl">
+                            <i class="fas fa-file-pdf"></i>
+                        </div>
+                        <div>
+                            <h3 id="resume-filename" class="text-sm font-bold text-slate-800 dark:text-white">resume_developer.pdf</h3>
+                            <span id="resume-uploaddate" class="text-[10px] text-slate-400 block mt-0.5">Uploaded on: July 8, 2026</span>
+                        </div>
+                    </div>
+                    
+                    <div class="flex flex-wrap gap-2 w-full sm:w-auto">
+                        <button type="button" id="preview-save-btn" onclick="saveResume()" class="hidden flex-1 sm:flex-initial py-2 px-4 rounded-xl bg-green-600 hover:bg-green-700 text-white font-bold text-xs transition shadow-md flex items-center justify-center gap-1.5">
+                            <i class="fas fa-save"></i> Save
+                        </button>
+                        <button type="button" id="preview-cancel-btn" onclick="cancelUploadSelection()" class="hidden flex-1 sm:flex-initial py-2 px-4 rounded-xl border border-slate-300 dark:border-slate-700 text-slate-700 dark:text-slate-300 hover:bg-slate-100 dark:hover:bg-slate-900 font-bold text-xs transition flex items-center justify-center">
+                            Cancel
+                        </button>
+                        <a id="download-link" href="#" download class="flex-1 sm:flex-initial py-2 px-4 rounded-xl border border-slate-300 dark:border-slate-700 text-slate-700 dark:text-slate-300 hover:bg-slate-100 dark:hover:bg-slate-900 font-bold text-xs transition flex items-center justify-center gap-1.5">
+                            <i class="fas fa-file-download"></i> Download
+                        </a>
+                        <label id="replace-label" for="replace-input-file" class="flex-1 sm:flex-initial py-2 px-4 rounded-xl bg-blue-600 hover:bg-blue-700 text-white font-bold text-xs cursor-pointer transition shadow-md flex items-center justify-center gap-1.5">
+                            <i class="fas fa-sync-alt"></i> Replace
+                        </label>
+                        <input type="file" id="replace-input-file" class="hidden" accept="application/pdf">
+                        
+                        <button id="delete-btn" onclick="deleteResume()" class="flex-1 sm:flex-initial py-2 px-4 rounded-xl bg-red-600 hover:bg-red-700 text-white font-bold text-xs transition shadow-md flex items-center justify-center gap-1.5">
+                            <i class="fas fa-trash"></i> Delete
+                        </button>
+                    </div>
+                </div>
+
+                <!-- PDF Preview Iframe Card -->
+                <div class="glass-card rounded-3xl overflow-hidden shadow-md flex-1 min-h-[400px] border border-slate-200 dark:border-slate-800/80 flex flex-col">
+                    <div class="p-4 border-b border-slate-100 dark:border-slate-800/80 bg-slate-100/50 dark:bg-slate-900/50 flex items-center justify-between text-xs font-bold text-slate-400">
+                        <span><i class="fas fa-eye mr-1"></i> Interactive Document Preview</span>
+                        <span class="text-[10px] text-blue-500">PDF Reader Frame</span>
+                    </div>
+                    <iframe id="resume-iframe" class="w-full flex-1 min-h-[500px] bg-slate-100 dark:bg-slate-900 border-none" src=""></iframe>
+                </div>
+            </div>
+            
+        </main>
+
+        <!-- Footer -->
+        <footer class="py-6 bg-slate-900 dark:bg-slate-950 text-slate-400 border-t border-slate-800 mt-auto">
+            <div class="max-w-7xl mx-auto px-6 text-center text-xs font-semibold">
+                <p>&copy; 2026 Devoff Itzme. Admin Console Mode.</p>
+            </div>
+        </footer>
+
+    </div>
+
+    <!-- SweetAlert2 -->
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+    
+    <!-- Scripts -->
+    <script src="js/config.js"></script>
+    <script src="js/api.js"></script>
+    <script src="js/auth.js"></script>
+    <script src="js/common.js"></script>
+    <script src="js/resume.js"></script>
+    
+    <script>
+        // Set up mobile menu content
+        document.addEventListener('DOMContentLoaded', () => {
+            const sidebar = document.getElementById('admin-sidebar-container');
+            const mobileSidebarLoader = document.getElementById('mobile-sidebar-loader');
+            if (sidebar && mobileSidebarLoader) {
+                setTimeout(() => {
+                    mobileSidebarLoader.innerHTML = sidebar.innerHTML;
+                    const mobileCloseBtn = mobileSidebarLoader.querySelector('#admin-logout-btn');
+                    if (mobileCloseBtn) {
+                        mobileCloseBtn.addEventListener('click', () => {
+                            document.getElementById('mobile-menu').classList.add('hidden');
+                        });
+                    }
+                }, 100);
+            }
+        });
+    </script>
+</body>
+</html>

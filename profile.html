@@ -1,0 +1,219 @@
+<!DOCTYPE html>
+<html lang="en" class="scroll-smooth">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Edit Profile | Portfolio Manager</title>
+    
+    <!-- CSS Dependencies -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script>
+        tailwind.config = {
+            darkMode: 'class',
+            theme: {
+                extend: {
+                    colors: {
+                        primary: {
+                            50: '#eff6ff',
+                            100: '#dbeafe',
+                            200: '#bfdbfe',
+                            300: '#93c5fd',
+                            400: '#60a5fa',
+                            500: '#3b82f6',
+                            600: '#2563eb',
+                            700: '#1d4ed8',
+                            800: '#1e40af',
+                            900: '#1e3a8a',
+                        },
+                        slate: {
+                            950: '#020617'
+                        }
+                    },
+                    fontFamily: {
+                        sans: ['Plus Jakarta Sans', 'sans-serif'],
+                    }
+                }
+            }
+        }
+    </script>
+    
+    <!-- Font Awesome -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    
+    <!-- Custom Style Modules -->
+    <link rel="stylesheet" href="css/style.css">
+    <link rel="stylesheet" href="css/animations.css">
+    <link rel="stylesheet" href="css/custom.css">
+</head>
+<body class="bg-slate-50 text-slate-800 dark:bg-slate-950 dark:text-slate-100 transition-colors duration-300 antialiased overflow-x-hidden min-h-screen flex">
+
+    <!-- Decorative Mesh Background -->
+    <div class="mesh-bg">
+        <div class="mesh-bg-circle-1"></div>
+        <div class="mesh-bg-circle-2"></div>
+    </div>
+
+    <!-- Admin Left Sidebar Navigation (Dynamically injected) -->
+    <div id="admin-sidebar-container" class="w-64 h-screen fixed top-0 left-0 hidden md:block z-30"></div>
+
+    <!-- Main Workspace Container -->
+    <div class="flex-1 md:ml-64 min-h-screen flex flex-col">
+        
+        <!-- Header -->
+        <header class="glass-nav h-16 fixed top-0 left-0 right-0 md:left-64 z-20 px-6 flex items-center justify-between">
+            <div class="flex items-center gap-4">
+                <button id="mobile-menu-button" class="md:hidden p-2 text-slate-600 dark:text-slate-300" aria-label="Open Sidebar Menu">
+                    <i class="fas fa-bars text-xl"></i>
+                </button>
+                <h1 class="text-lg font-bold text-slate-900 dark:text-white">Profile Management</h1>
+            </div>
+            <div class="flex items-center gap-3">
+                <span class="text-xs font-semibold bg-blue-100 dark:bg-blue-900/50 text-blue-600 dark:text-sky-300 px-3 py-1 rounded-full uppercase tracking-wider border border-blue-500/10">Admin Settings</span>
+            </div>
+        </header>
+
+        <!-- Mobile Drawer Menu -->
+        <div id="mobile-menu" class="hidden md:hidden fixed inset-0 z-30 flex">
+            <div class="absolute inset-0 bg-slate-950/60 backdrop-blur-sm" onclick="document.getElementById('mobile-menu').classList.add('hidden')"></div>
+            <div class="relative w-64 h-full bg-slate-900 z-40">
+                <button onclick="document.getElementById('mobile-menu').classList.add('hidden')" class="absolute top-4 right-4 text-slate-400 hover:text-white">
+                    <i class="fas fa-times text-xl"></i>
+                </button>
+                <div class="h-full flex flex-col" id="mobile-sidebar-loader"></div>
+            </div>
+        </div>
+
+        <!-- Content Container -->
+        <main class="flex-1 p-6 md:p-8 mt-16 max-w-5xl mx-auto w-full space-y-8 animate-fade-in-up">
+            
+            <form id="profile-form" enctype="multipart/form-data" class="space-y-8">
+                
+                <!-- 1. Visual Brand Card (Cover & Avatar) -->
+                <div class="glass-card rounded-3xl overflow-hidden shadow-md">
+                    <!-- Background Cover Solid Color -->
+                    <div id="cover-preview" class="h-48 md:h-64 bg-[#1E293B] relative">
+                        <input type="hidden" id="cover-url" value="">
+                    </div>
+                    
+                    <!-- Avatar Upload Area -->
+                    <div class="p-6 md:p-8 pt-0 relative flex flex-col items-center sm:items-start sm:flex-row gap-6">
+                        <div class="w-32 h-32 rounded-full overflow-hidden border-4 border-white dark:border-slate-950 shadow-lg relative -mt-16 bg-slate-100 dark:bg-slate-800 flex-shrink-0">
+                            <img id="avatar-preview" src="assets/images/profile.png" alt="Avatar" class="w-full h-full object-cover">
+                            <input type="hidden" id="avatar-url" value="assets/images/profile.png">
+                        </div>
+                        
+                        <div class="text-center sm:text-left pt-3">
+                            <h2 class="text-xl font-bold text-slate-900 dark:text-white">Profile Visual Brand</h2>
+                            <p class="text-xs text-slate-500 dark:text-slate-400 mt-1">
+                                Your profile visual branding details. Upload controls are disabled.
+                            </p>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- 2. Basic Details Card -->
+                <div class="glass-card p-6 md:p-8 rounded-3xl shadow-md space-y-6">
+                    <h3 class="text-base font-bold text-slate-800 dark:text-white flex items-center gap-2"><i class="fas fa-user text-blue-600"></i> Basic Biography Info</h3>
+                    <div class="w-8 h-0.5 bg-blue-600 rounded"></div>
+                    
+                    <div class="grid sm:grid-cols-2 gap-6">
+                        <div>
+                            <label for="profile-fullname" class="block text-xs font-bold text-slate-400 uppercase tracking-wider mb-2">Full Name</label>
+                            <input type="text" id="profile-fullname" class="w-full px-4 py-2.5 rounded-xl border border-slate-200 dark:border-slate-800 bg-white/50 dark:bg-slate-900/50 focus:outline-none focus:ring-2 focus:ring-blue-500 text-slate-800 dark:text-white font-medium text-sm transition" placeholder="Enter Your Name" required>
+                        </div>
+                        <div>
+                            <label for="profile-designation" class="block text-xs font-bold text-slate-400 uppercase tracking-wider mb-2">Designation</label>
+                            <input type="text" id="profile-designation" class="w-full px-4 py-2.5 rounded-xl border border-slate-200 dark:border-slate-800 bg-white/50 dark:bg-slate-900/50 focus:outline-none focus:ring-2 focus:ring-blue-500 text-slate-800 dark:text-white font-medium text-sm transition" placeholder="Designation" required>
+                        </div>
+                        <div class="sm:col-span-2 flex items-center py-2">
+                            <label class="flex items-center gap-2.5 cursor-pointer">
+                                <input type="checkbox" id="profile-available-for-hire" class="rounded text-blue-600 focus:ring-blue-500 h-4.5 w-4.5">
+                                <span class="text-xs font-bold text-slate-700 dark:text-slate-300">Show "Available for Hire" Badge on Homepage</span>
+                            </label>
+                        </div>
+                        <div class="sm:col-span-2">
+                            <label for="profile-about" class="block text-xs font-bold text-slate-400 uppercase tracking-wider mb-2">About Biography</label>
+                            <textarea id="profile-about" rows="6" class="w-full px-4 py-2.5 rounded-xl border border-slate-200 dark:border-slate-800 bg-white/50 dark:bg-slate-900/50 focus:outline-none focus:ring-2 focus:ring-blue-500 text-slate-800 dark:text-white font-medium text-sm transition" placeholder="Provide a detailed overview of your experiences, architecture skills, and stack knowledge..." required></textarea>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- 3. Contact & Socials Card -->
+                <div class="glass-card p-6 md:p-8 rounded-3xl shadow-md space-y-6">
+                    <h3 class="text-base font-bold text-slate-800 dark:text-white flex items-center gap-2"><i class="fas fa-globe text-blue-600"></i> Contact & Social Network Accounts</h3>
+                    <div class="w-8 h-0.5 bg-blue-600 rounded"></div>
+                    
+                    <div class="grid sm:grid-cols-2 gap-6">
+                        <div>
+                            <label for="profile-email" class="block text-xs font-bold text-slate-400 uppercase tracking-wider mb-2">Public Email</label>
+                            <input type="email" id="profile-email" class="w-full px-4 py-2.5 rounded-xl border border-slate-200 dark:border-slate-800 bg-white/50 dark:bg-slate-900/50 focus:outline-none focus:ring-2 focus:ring-blue-500 text-slate-800 dark:text-white font-medium text-sm transition" placeholder="your.email@example.com">
+                        </div>
+                        <div>
+                            <label for="profile-location" class="block text-xs font-bold text-slate-400 uppercase tracking-wider mb-2">Location</label>
+                            <input type="text" id="profile-location" class="w-full px-4 py-2.5 rounded-xl border border-slate-200 dark:border-slate-800 bg-white/50 dark:bg-slate-900/50 focus:outline-none focus:ring-2 focus:ring-blue-500 text-slate-800 dark:text-white font-medium text-sm transition" placeholder="Bangalore, India">
+                        </div>
+                        <div>
+                            <label for="profile-github" class="block text-xs font-bold text-slate-400 uppercase tracking-wider mb-2">GitHub URL</label>
+                            <input type="url" id="profile-github" class="w-full px-4 py-2.5 rounded-xl border border-slate-200 dark:border-slate-800 bg-white/50 dark:bg-slate-900/50 focus:outline-none focus:ring-2 focus:ring-blue-500 text-slate-800 dark:text-white font-medium text-sm transition" placeholder="https://github.com/username">
+                        </div>
+                        <div>
+                            <label for="profile-linkedin" class="block text-xs font-bold text-slate-400 uppercase tracking-wider mb-2">LinkedIn URL</label>
+                            <input type="url" id="profile-linkedin" class="w-full px-4 py-2.5 rounded-xl border border-slate-200 dark:border-slate-800 bg-white/50 dark:bg-slate-900/50 focus:outline-none focus:ring-2 focus:ring-blue-500 text-slate-800 dark:text-white font-medium text-sm transition" placeholder="https://linkedin.com/in/username">
+                        </div>
+
+                    </div>
+                </div>
+
+                <!-- Form Action Buttons -->
+                <div class="flex justify-end gap-4">
+                    <a href="dashboard.html" class="py-3 px-6 rounded-xl border border-slate-300 dark:border-slate-700 text-slate-700 dark:text-slate-300 hover:bg-slate-100 dark:hover:bg-slate-900 font-bold transition text-sm">
+                        Cancel
+                    </a>
+                    <button type="submit" class="py-3 px-8 rounded-xl bg-blue-600 hover:bg-blue-700 text-white font-bold transition shadow-lg shadow-blue-500/20 text-sm">
+                        <i class="fas fa-save mr-2"></i> Save Changes
+                    </button>
+                </div>
+
+            </form>
+            
+        </main>
+
+        <!-- Footer -->
+        <footer class="py-6 bg-slate-900 dark:bg-slate-950 text-slate-400 border-t border-slate-800 mt-auto">
+            <div class="max-w-7xl mx-auto px-6 text-center text-xs font-semibold">
+                <p>&copy; 2026 Devoff Itzme. Admin Console Mode.</p>
+            </div>
+        </footer>
+
+    </div>
+
+    <!-- SweetAlert2 -->
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+    
+    <!-- Scripts -->
+    <script src="js/config.js"></script>
+    <script src="js/api.js"></script>
+    <script src="js/auth.js"></script>
+    <script src="js/common.js"></script>
+    <script src="js/profile.js"></script>
+    
+    <script>
+        // Set up mobile menu content
+        document.addEventListener('DOMContentLoaded', () => {
+            const sidebar = document.getElementById('admin-sidebar-container');
+            const mobileSidebarLoader = document.getElementById('mobile-sidebar-loader');
+            if (sidebar && mobileSidebarLoader) {
+                setTimeout(() => {
+                    mobileSidebarLoader.innerHTML = sidebar.innerHTML;
+                    const mobileCloseBtn = mobileSidebarLoader.querySelector('#admin-logout-btn');
+                    if (mobileCloseBtn) {
+                        mobileCloseBtn.addEventListener('click', () => {
+                            document.getElementById('mobile-menu').classList.add('hidden');
+                        });
+                    }
+                }, 100);
+            }
+        });
+    </script>
+</body>
+</html>
