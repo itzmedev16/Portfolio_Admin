@@ -90,7 +90,7 @@ function setupProfileForm() {
             fullName: document.getElementById('profile-fullname').value.trim(),
             designation: document.getElementById('profile-designation').value.trim(),
             about: document.getElementById('profile-about').value.trim(),
-            phone: document.getElementById('profile-phone').value.trim(),
+            phone: document.getElementById('profile-phone')?.value.trim() || '',
             email: document.getElementById('profile-email').value.trim(),
             location: document.getElementById('profile-location').value.trim(),
             github: githubRes.normalized,
