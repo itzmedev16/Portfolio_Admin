@@ -13,7 +13,10 @@ async function loadProfileDetails() {
         document.getElementById('profile-designation').value = profile.designation || '';
         document.getElementById('profile-available-for-hire').checked = profile.availableForHire || false;
         document.getElementById('profile-about').value = profile.about || '';
-        document.getElementById('profile-phone').value = profile.phone || '';
+        const phoneInput = document.getElementById('profile-phone');
+            if (phoneInput) {
+                phoneInput.value = profile.phone || '';
+            }
         document.getElementById('profile-email').value = profile.email || '';
         document.getElementById('profile-location').value = profile.location || '';
         document.getElementById('profile-github').value = profile.github || '';
